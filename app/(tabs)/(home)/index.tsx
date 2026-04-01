@@ -70,6 +70,7 @@ const Home = () => {
         <Text className="text-white font-semibold text-3xl px-3">
           {user?.username} 👋
         </Text>
+
         <FlatList
           scrollEnabled={false}
           numColumns={2}

@@ -9,7 +9,8 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.randeep.nebula"
     },
     "android": {
       "package": "com.randeep.nebula",
@@ -41,11 +42,7 @@
       [
         "expo-media-library",
         {
-          "granularPermissions": [
-            "audio",
-            "photo",
-            "video"
-          ]
+          "granularPermissions": ["audio", "photo", "video"]
         }
       ],
       "expo-router",
