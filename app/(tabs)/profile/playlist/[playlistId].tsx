@@ -150,8 +150,7 @@ const playlist = () => {
           <View className="relative">
             <Image
               source={{
-                uri:
-                  playlist?.coverImage?.[2]?.url ?? "https://picsum.photos/400",
+                uri: playlist?.coverImage || "https://picsum.photos/400",
               }}
               style={{
                 width: "100%",
@@ -265,22 +264,42 @@ const playlist = () => {
             </View>
           </View>
         </View>
-        <View className="px-3 flex-1" style={{ marginBottom: 30 }}>
-          <FlatList
-            scrollEnabled={false}
-            showsVerticalScrollIndicator={false}
-            data={songDetails || []}
-            renderItem={({ item }) => {
-              return (
-                <Songs
-                  item={item}
-                  handlePlaySong={handlePlaySong}
-                  showAddButton={false}
-                />
-              );
-            }}
-            keyExtractor={(item) => item.id}
-          />
+        <View className="px-3 flex-1 h-full" style={{ marginBottom: 30 }}>
+          {songDetails?.length > 0 ? (
+            <FlatList
+              scrollEnabled={false}
+              showsVerticalScrollIndicator={false}
+              data={songDetails || []}
+              renderItem={({ item }) => {
+                return (
+                  <Songs
+                    playlistId={playlistId as string}
+                    item={item}
+                    handlePlaySong={handlePlaySong}
+                    showAddButton={false}
+                    showRemoveFromPlaylist={true}
+                  />
+                );
+              }}
+              keyExtractor={(item) => item.id}
+            />
+          ) : (
+            <View className="items-center justify-center w-full mt-10">
+              <MaterialCommunityIcons
+                className="bg-zinc-900 mb-2 rounded-full p-4"
+                name="music"
+                size={40}
+                color="#9ca3af"
+              />
+
+              <Text className="text-zinc-400 text-xl font-medium">
+                No songs found
+              </Text>
+              <Text className="text-zinc-500 text-base mt-1">
+                Start by adding songs to this playlist
+              </Text>
+            </View>
+          )}
         </View>
         <View style={{ marginBottom: 150 }} />
       </ParallaxScrollView>

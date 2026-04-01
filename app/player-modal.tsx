@@ -385,6 +385,7 @@ const PlayerModal = () => {
           />
         </BottomSheetView>
         <BottomSheetFlatList
+          showsVerticalScrollIndicator={false}
           data={filteredSongs}
           keyExtractor={(item: any) => item.id + Math.random()}
           contentContainerStyle={{ padding: 16, marginTop: 10 }}

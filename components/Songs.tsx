@@ -1,4 +1,5 @@
 import { useLibrary } from "@/hooks/useLibrary";
+import useMyPlaylist from "@/hooks/useMyPlaylist";
 import { usePlayerStore } from "@/store/usePlayerStore";
 import { useOptionsSheet } from "@/utils/OptionsSheetContext";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
@@ -12,6 +13,7 @@ import { DownloadModal } from "./DownloadModal";
 import { PlaylistModal } from "./PlaylistModal";
 
 const Songs = ({
+  playlistId,
   showRemoveFromPlaylist = false,
   showAddButton = true,
   isAlbum = false,
@@ -20,6 +22,7 @@ const Songs = ({
   handlePlaySong,
   showAddedToLiked = !showAddButton,
 }: {
+  playlistId?: string;
   showRemoveFromPlaylist?: boolean;
   showAddedToLiked?: boolean;
   showAddButton?: boolean;
@@ -33,6 +36,7 @@ const Songs = ({
   const toast = useToast();
 
   const { currentSong, addSongToQueue, isPlaying } = usePlayerStore();
+  const { removeSongFromPlaylist } = useMyPlaylist();
   const { addSong, removeSong, libraryItems } = useLibrary();
   const { openSheet } = useOptionsSheet();
   const router = useRouter();
@@ -79,7 +83,23 @@ const Songs = ({
         ? "Remove from Playlist"
         : "Add to Playlist",
       onPress: () => {
-        setPlaylistModal(true);
+        if (showRemoveFromPlaylist) {
+          if (!playlistId) {
+            toast.show("Playlist ID is required");
+            return;
+          }
+          removeSongFromPlaylist({
+            playlistId,
+            songId: item.id,
+          });
+        } else {
+          setPlaylistModal(true);
+        }
+        toast.show(
+          showRemoveFromPlaylist
+            ? "Song removed from playlist"
+            : "Song added to playlist",
+        );
       },
     },
     {
@@ -88,7 +108,7 @@ const Songs = ({
       onPress: () => {
         if (artistId) {
           router.push({
-            pathname: "/(tabs)/search/artist/[artistId]",
+            pathname: "/(tabs)/(search)/artist/[artistId]",
             params: { artistId: artistId },
           });
         }
@@ -208,6 +228,7 @@ const Songs = ({
         onClose={() => setDownloadModal(false)}
         song={item}
       />
+
       <PlaylistModal
         visible={playlistModal}
         onClose={() => setPlaylistModal(false)}

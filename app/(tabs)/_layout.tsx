@@ -33,7 +33,7 @@ export default function TabLayout() {
         }}
       >
         <Tabs.Screen
-          name="home"
+          name="(home)"
           options={{
             title: "Home",
             tabBarIcon: ({ color }) => (
@@ -83,7 +83,7 @@ export default function TabLayout() {
           key={user?.profilePic ?? "default"}
         />
 
-        <Tabs.Screen name="(search,library)" options={{ href: null }} />
+        <Tabs.Screen name="(home,search,library)" options={{ href: null }} />
       </Tabs>
 
       <MiniPlayer />

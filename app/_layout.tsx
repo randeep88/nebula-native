@@ -2,6 +2,7 @@ import RootNavigation from "@/components/RootNavigation";
 import { OptionsSheetProvider } from "@/utils/OptionsSheetContext";
 import { PlayerProvider } from "@/utils/usePlayer";
 import { DarkTheme, ThemeProvider } from "@react-navigation/native";
+import * as Sentry from "@sentry/react-native";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { usePathname } from "expo-router";
 import { StatusBar } from "expo-status-bar";
@@ -10,10 +11,9 @@ import { MD3LightTheme, Provider as PaperProvider } from "react-native-paper";
 import "react-native-reanimated";
 import { ToastProvider } from "react-native-toast-notifications";
 import "./global.css";
-import * as Sentry from '@sentry/react-native';
 
 Sentry.init({
-  dsn: 'https://2b4e7cf84e0ea82735d50d345efd37da@o4511142153027584.ingest.de.sentry.io/4511142157615184',
+  dsn: "https://2b4e7cf84e0ea82735d50d345efd37da@o4511142153027584.ingest.de.sentry.io/4511142157615184",
 
   // Adds more context data to events (IP address, cookies, user, etc.)
   // For more information, visit: https://docs.sentry.io/platforms/react-native/data-management/data-collected/

@@ -28,8 +28,6 @@ const All = ({
     return Number(song.year) > Number(latest.year) ? song : latest;
   }, data?.songs?.[0]);
 
-  console.log(data);
-
   const toArray = (val: any) => (Array.isArray(val) ? val : val ? [val] : []);
 
   const songs = toArray(data?.songs);

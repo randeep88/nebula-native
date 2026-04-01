@@ -16,7 +16,7 @@ const useUser = () => {
 
   const {
     data: user,
-    isPending: isLoadingUser,
+    isFetching: isLoadingUser,
     refetch: refetchUser,
   } = useQuery({
     queryKey: ["user", token],
@@ -26,7 +26,7 @@ const useUser = () => {
       });
       return res.data;
     },
-    enabled: !!token,
+    enabled: !!token && !isTokenLoading, // ✅ token load hone ke baad hi fetch karo
     retry: 2,
     staleTime: Infinity,
   });

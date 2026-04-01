@@ -116,7 +116,7 @@ const LibraryScreen = () => {
             >
               <View className="p-2 flex-row items-center gap-4 mb-2">
                 <Image
-                  source={require("@/assets/images/1.jpg")}
+                  source={require("@/assets/images/lb.png")}
                   style={{ width: 55, height: 55, borderRadius: 4 }}
                 />
                 <View>

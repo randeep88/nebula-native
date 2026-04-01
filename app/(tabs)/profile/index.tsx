@@ -20,16 +20,23 @@ import {
   Text,
   View,
 } from "react-native";
-import { Button, TextInput } from "react-native-paper";
+import {
+  Button,
+  Dialog,
+  IconButton,
+  Portal,
+  TextInput,
+} from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useToast } from "react-native-toast-notifications";
 
 const public_key = process.env.EXPO_PUBLIC_IMAGEKIT_PUBLIC_KEY;
 
 const Profile = () => {
+  const [dialogVisible, setDialogVisible] = useState(false);
+  const [selectedPlaylistId, setSelectedPlaylistId] = useState("");
   const { user, token, refetchUser } = useUser();
   const [username, setUsername] = useState<string | undefined>(undefined);
-  // const [email, setEmail] = useState<string | undefined>(undefined);
   const [image, setImage] = useState<string | null>(null);
   const [visible, setVisible] = useState<boolean>(false);
   const [playlistModalVisible, setPlaylistModalVisible] =
@@ -40,8 +47,8 @@ const Profile = () => {
 
   const router = useRouter();
 
-  const { myPlaylists, loadingPlaylists, refetchPlaylists } = useMyPlaylist();
-  // console.log("myPlaylists", myPlaylists);
+  const { myPlaylists, loadingPlaylists, refetchPlaylists, deletePlaylist } =
+    useMyPlaylist();
 
   useEffect(() => {
     const getColor = async () => {
@@ -69,7 +76,7 @@ const Profile = () => {
 
   const logoutUser = async () => {
     AsyncStorage.removeItem("token");
-    router.replace("./");
+    router.replace("/auth/login");
   };
 
   const pickImage = async () => {
@@ -223,42 +230,117 @@ const Profile = () => {
               <ActivityIndicator size="large" color="#FFFFFF" animating />
             </View>
           ) : (
-            <FlatList
-              key={"myplaylist"}
-              keyExtractor={(item) => item.id}
-              data={myPlaylists}
-              renderItem={({ item }) => (
-                <Pressable
-                  onPress={() =>
-                    router.push({
-                      pathname: "/(tabs)/profile/playlist/[playlistId]",
-                      params: { playlistId: item._id },
-                    })
-                  }
-                >
-                  <View className="p-2 flex-row items-center gap-4 mb-2">
-                    <Image
-                      source={{ uri: item?.coverImage || "" }}
-                      style={{ width: 60, height: 60, borderRadius: 4 }}
-                    />
-                    <View className="flex-1">
-                      <Text
-                        numberOfLines={1}
-                        className="text-white font-medium text-xl"
-                      >
-                        {item?.name}
-                      </Text>
-                      <Text className="text-white/70 text-base">
-                        {item?.songs?.length}{" "}
-                        {item?.songs.length > 1 ? "songs" : "song"}
-                      </Text>
-                    </View>
-                  </View>
-                </Pressable>
+            <>
+              {myPlaylists?.length === 0 ? (
+                <View className="items-center justify-center w-full mt-32">
+                  <MaterialCommunityIcons
+                    className="bg-zinc-900 mb-2 rounded-full p-4"
+                    name="playlist-music"
+                    size={40}
+                    color="#9ca3af"
+                  />
+
+                  <Text className="text-zinc-400 text-xl font-medium">
+                    No playlists found
+                  </Text>
+                  <Text className="text-zinc-500 text-base mt-1">
+                    Create your first playlist to get started
+                  </Text>
+                </View>
+              ) : (
+                <FlatList
+                  key={"myplaylist"}
+                  keyExtractor={(item) => item?.id}
+                  data={myPlaylists}
+                  renderItem={({ item }) => (
+                    <Pressable
+                      onPress={() =>
+                        router.push({
+                          pathname: "/(tabs)/profile/playlist/[playlistId]",
+                          params: { playlistId: item._id },
+                        })
+                      }
+                    >
+                      <View className="p-2 flex-row items-center justify-between mb-2">
+                        <View className="flex-row items-center gap-4">
+                          <Image
+                            source={{ uri: item?.coverImage || "" }}
+                            style={{ width: 60, height: 60, borderRadius: 4 }}
+                          />
+                          <View className="flex-1">
+                            <Text
+                              numberOfLines={1}
+                              className="text-white font-medium text-xl"
+                            >
+                              {item?.name}
+                            </Text>
+                            <Text className="text-white/70 text-base">
+                              {item?.songs?.length}{" "}
+                              {item?.songs.length > 1 ? "songs" : "song"}
+                            </Text>
+                          </View>
+
+                          <IconButton
+                            icon="delete"
+                            iconColor="gray"
+                            size={24}
+                            onPress={() => {
+                              setSelectedPlaylistId(item._id);
+                              setDialogVisible(true);
+                            }}
+                          />
+                        </View>
+                      </View>
+                    </Pressable>
+                  )}
+                />
               )}
-            />
+            </>
           )}
         </View>
+
+        <Portal>
+          <Dialog
+            style={{ backgroundColor: "#222" }}
+            theme={{
+              roundness: 2,
+              dark: true,
+            }}
+            visible={dialogVisible}
+            onDismiss={() => setDialogVisible(false)}
+          >
+            <Dialog.Title style={{ color: "white" }}>
+              Delete Playlist
+            </Dialog.Title>
+            <Dialog.Content>
+              <Text className="text-zinc-400">
+                Are you sure you want to delete this playlist?
+              </Text>
+            </Dialog.Content>
+            <Dialog.Actions>
+              <Button
+                textColor="#a1a1a1"
+                mode="text"
+                onPress={() => {
+                  setDialogVisible(false);
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                textColor="red"
+                onPress={() => {
+                  if (!selectedPlaylistId)
+                    return toast.show("Playlist not found");
+                  deletePlaylist({ playlistId: selectedPlaylistId });
+                  setDialogVisible(false);
+                }}
+              >
+                Delete
+              </Button>
+            </Dialog.Actions>
+          </Dialog>
+        </Portal>
 
         <Modal transparent visible={visible} animationType="slide">
           <View className="flex-1 bg-black/60 items-center justify-center">
@@ -341,17 +423,6 @@ const Profile = () => {
                     theme={{ colors: { onSurfaceVariant: "#d4d4d4" } }}
                     onChangeText={setUsername}
                   />
-
-                  {/* <TextInput
-                    label="Email"
-                    mode="outlined"
-                    style={{ backgroundColor: "#27272a" }}
-                    placeholderTextColor="#d4d4d4"
-                    theme={{ colors: { onSurfaceVariant: "#d4d4d4" } }}
-                    textColor="white"
-                    value={email}
-                    onChangeText={setEmail}
-                  /> */}
                 </View>
 
                 <View className="flex-row justify-end gap-3 mt-3">

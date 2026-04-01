@@ -109,7 +109,7 @@ const LikedSongs = () => {
         headerImage={
           <View className="relative">
             <Image
-              source={require("@/assets/images/1.jpg")}
+              source={require("@/assets/images/lb.png")}
               style={{
                 width: "100%",
                 height: 300,

@@ -45,6 +45,29 @@ const useMyPlaylist = (id?: string) => {
     enabled: !!token && !isTokenLoading,
   });
 
+  const { mutate: deletePlaylist, isPending: deletingPlaylist } = useMutation({
+    mutationFn: async ({ playlistId }: { playlistId: string }) => {
+      if (isTokenLoading || !token) {
+        throw new Error("Token not found");
+      }
+      const res = await backendAPI.delete("/playlist/delete", {
+        data: {
+          playlistId,
+        },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return res.data.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["my-playlists"] });
+    },
+    onError: (err) => {
+      console.log(err);
+    },
+  });
+
   const { mutate: createPlaylist, isPending: creatingPlaylist } = useMutation({
     mutationFn: async ({
       name,
@@ -111,6 +134,39 @@ const useMyPlaylist = (id?: string) => {
     },
   });
 
+  const {
+    mutate: removeSongFromPlaylist,
+    isPending: removingSongFromPlaylist,
+  } = useMutation({
+    mutationFn: async ({
+      playlistId,
+      songId,
+    }: {
+      playlistId: string;
+      songId: string;
+    }) => {
+      if (isTokenLoading || !token) {
+        throw new Error("Token not found");
+      }
+      const res = await backendAPI.delete("/playlist/remove-song", {
+        data: {
+          playlistId,
+          songId,
+        },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return res.data.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["my-playlists"] });
+    },
+    onError: (err) => {
+      console.log(err);
+    },
+  });
+
   return {
     myPlaylists,
     loadingPlaylists,
@@ -119,8 +175,12 @@ const useMyPlaylist = (id?: string) => {
     creatingPlaylist,
     addSong,
     addingSong,
+    removeSongFromPlaylist,
+    removingSongFromPlaylist,
     playlist,
     loadingPlaylist,
+    deletePlaylist,
+    deletingPlaylist,
   };
 };
 

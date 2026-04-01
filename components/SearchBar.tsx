@@ -1,4 +1,5 @@
 import Feather from "@expo/vector-icons/Feather";
+import { usePathname } from "expo-router";
 import React from "react";
 import { TextInput, View } from "react-native";
 

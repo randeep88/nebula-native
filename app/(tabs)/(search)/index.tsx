@@ -36,6 +36,7 @@ const SearchScreen = () => {
     setIsPlaying,
     setSongsQueue,
   } = usePlayerStore();
+
   const [activeTab, setActiveTab] = useState("all");
   const { data: musicData } = useSearchResults(searchQuery ?? "");
 
@@ -59,36 +60,38 @@ const SearchScreen = () => {
 
   const handlePlaySong = (song: any) => {
     setCurrentSong(song);
-    updateLastPlayedSong(song?.id);
-    setSongsQueue(songs);
     setIsPlaying(true);
+    setSongsQueue(songs);
+    updateLastPlayedSong(song?.id);
   };
 
   const Header = () => (
     <View className="px-3 mb-3 gap-3 z-50">
       <Text className="text-white font-bold text-2xl">Search</Text>
       <SearchBar onChangeText={setSearchQuery} />
-      <View className="flex-row justify-between">
-        {tabs?.map((tab: any) => (
-          <Chip
-            compact
-            style={{
-              backgroundColor:
-                tab.value === activeTab ? "#00CDAC" : "#FFFFFF2D",
-              borderRadius: 100,
-            }}
-            textStyle={{
-              color: tab.value === activeTab ? "black" : "white",
-              fontSize: 13,
-            }}
-            selectedColor="white"
-            key={tab?.value}
-            onPress={() => setActiveTab(tab?.value)}
-          >
-            {tab?.label}
-          </Chip>
-        ))}
-      </View>
+      {musicData && (
+        <View className="flex-row justify-between">
+          {tabs?.map((tab: any) => (
+            <Chip
+              compact
+              style={{
+                backgroundColor:
+                  tab.value === activeTab ? "#00CDAC" : "#FFFFFF2D",
+                borderRadius: 100,
+              }}
+              textStyle={{
+                color: tab.value === activeTab ? "black" : "white",
+                fontSize: 13,
+              }}
+              selectedColor="white"
+              key={tab?.value}
+              onPress={() => setActiveTab(tab?.value)}
+            >
+              {tab?.label}
+            </Chip>
+          ))}
+        </View>
+      )}
     </View>
   );
 
