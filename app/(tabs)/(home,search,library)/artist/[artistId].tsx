@@ -58,7 +58,6 @@ const ArtistDetails = () => {
       const color = await getDominantColor(
         artistDetails?.image?.[2]?.url || "",
       );
-      console.log("color", color);
       setDominantColor(color);
     };
     getColor();
@@ -213,7 +212,7 @@ const ArtistDetails = () => {
                 </View>
               )}
               <Text className="text-white/80 font-semibold text-base">
-                {formatNumbers(Number(artistDetails?.followerCount))} followers
+                {formatNumbers(Number(artistDetails?.followerCount))} listeners
               </Text>
             </View>
             <View className="items-center justify-between flex-row gap-4">
@@ -417,7 +416,7 @@ const ArtistDetails = () => {
             />
           </View>
         )}
-        <View style={{ marginBottom: 150 }} />
+        <View style={{ paddingBottom: 200 }} />
       </ParallaxScrollView>
     </SafeAreaView>
   );

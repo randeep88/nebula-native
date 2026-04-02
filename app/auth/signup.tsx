@@ -1,39 +1,43 @@
-import { useLogin } from "@/hooks/useLogin";
+import { useRegister } from "@/hooks/useRegister";
 import { Link } from "expo-router";
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
-  Alert,
-  Image,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  Text,
-  View,
+    Alert,
+    Image,
+    KeyboardAvoidingView,
+    Platform,
+    ScrollView,
+    Text,
+    View,
 } from "react-native";
 import { Button, TextInput } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-type Login = {
+type Signup = {
   username: string;
   password: string;
+  email: string;
 };
 
-const LoginScreen = () => {
-  const { loginMutate, isPending } = useLogin();
+const SignupScreen = () => {
+  const { registerMutate, isPending } = useRegister();
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<Login>();
+  } = useForm<Signup>();
 
-  const onSubmit = (data: Login) => {
-    console.log(data);
-    if (!data.username || !data.password) {
+  const onSubmit = async (data: Signup) => {
+    const seed = Date.now() + Math.random();
+    const randomUrl = `https://robohash.org/${seed}?set=set1`;
+
+    if (!data.email || !data.password) {
       Alert.alert("Email and password are required");
       return;
     }
-    loginMutate({ username: data?.username, password: data?.password });
+    console.log("register data", { ...data, profilePic: randomUrl });
+    registerMutate({ ...data, profilePic: randomUrl });
   };
 
   return (
@@ -52,11 +56,33 @@ const LoginScreen = () => {
               style={{ width: 80, height: 80 }}
             />
             <Text className="text-2xl logoFont text-white font-extrabold">
-              Login to start listening
+              Create a new account
             </Text>
           </View>
 
           <View className="gap-5">
+            {/* Email */}
+            <Controller
+              control={control}
+              name="email"
+              rules={{ required: "Email is required" }}
+              render={({ field: { onChange, value } }) => (
+                <TextInput
+                  label="Email"
+                  mode="outlined"
+                  style={{ backgroundColor: "black" }}
+                  textColor="white"
+                  value={value}
+                  placeholderTextColor="#d4d4d4"
+                  theme={{ colors: { onSurfaceVariant: "#d4d4d4" } }}
+                  onChangeText={onChange}
+                />
+              )}
+            />
+            {errors?.email && (
+              <Text className="text-red-500">{errors.email.message}</Text>
+            )}
+
             {/* Username */}
             <Controller
               control={control}
@@ -109,10 +135,10 @@ const LoginScreen = () => {
               textColor="black"
               onPress={handleSubmit(onSubmit)}
             >
-              Login
+              Sign up
             </Button>
-            <Link href="/auth/signup" className="text-white text-center mt-2">
-              Don't have an account? Sign up
+            <Link href="/auth/login" className="text-white text-center mt-2">
+              Already have an account? Login
             </Link>
           </View>
         </ScrollView>
@@ -121,4 +147,4 @@ const LoginScreen = () => {
   );
 };
 
-export default LoginScreen;
+export default SignupScreen;

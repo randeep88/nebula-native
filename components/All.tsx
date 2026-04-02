@@ -33,6 +33,7 @@ const All = ({
   const songs = toArray(data?.songs);
   const albums = toArray(data?.albums);
   const artists = toArray(data?.artists);
+  const similarArtists = toArray(data?.artists?.similarArtists);
   const playlists = toArray(data?.playlists);
 
   const filteredSongs = songs?.filter((song) => song?.id !== topResult?.id);
@@ -115,7 +116,7 @@ const All = ({
         <View className="mb-5">
           <Text className="text-white font-bold text-2xl mb-3">Artists</Text>
           <FlatList
-            data={artists?.slice(0, 6)}
+            data={[...artists, ...similarArtists]?.slice(0, 6)}
             numColumns={2}
             columnWrapperStyle={{
               justifyContent: "flex-start",

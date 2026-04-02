@@ -1,11 +1,12 @@
+import Albums from "@/components/Albums";
 import useLastPlayedSong from "@/hooks/useLastPlayedSong";
 import useSuggestedSongs from "@/hooks/useSuggestedSongs";
 import useUser from "@/hooks/useUser";
 import { usePlayerStore } from "@/store/usePlayerStore";
-import { isValidImageUrl } from "@/utils/validImage";
 import { useRouter } from "expo-router";
-import React from "react";
+import React, { useEffect } from "react";
 import {
+  ActivityIndicator,
   FlatList,
   Image,
   Pressable,
@@ -27,19 +28,21 @@ const getGreeting = () => {
 const Home = () => {
   const router = useRouter();
   const { user } = useUser();
-  const {
-    currentSong,
-    setCurrentSong,
-    setIsPlaying,
-    setSongsQueue,
-    isPlaying,
-  } = usePlayerStore();
+  const { currentSong, setCurrentSong, setIsPlaying, setSongsQueue } =
+    usePlayerStore();
 
   const { lastPlayedSong, updateLastPlayedSong } = useLastPlayedSong();
 
   const songId = currentSong?.id || lastPlayedSong?.id;
 
-  const { suggestedSongs, isPending } = useSuggestedSongs(songId);
+  const { suggestedSongs, isPending, refetchSuggestedSongs } =
+    useSuggestedSongs(songId);
+
+  useEffect(() => {
+    if (songId) {
+      refetchSuggestedSongs();
+    }
+  }, [songId]);
 
   const handlePlaySong = (song: any) => {
     setCurrentSong(song);
@@ -63,7 +66,7 @@ const Home = () => {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <Text className="text-white/80 font-medium text-base px-3">
           {getGreeting()},
         </Text>
@@ -94,12 +97,12 @@ const Home = () => {
           )}
           keyExtractor={(_, index) => index.toString()}
         />
-        <Text className="text-zinc-200 font-medium text-lg mb-2 px-3">
+        <Text className="text-white font-semibold text-lg mb-2 px-3">
           Recommended for this track
         </Text>
         {isPending ? (
-          <View className="flex-1 items-center justify-center">
-            <Text className="text-white">Loading suggestions...</Text>
+          <View className="flex-1 items-center justify-center h-full">
+            <ActivityIndicator size="large" color="white" />
           </View>
         ) : (
           <FlatList
@@ -113,44 +116,11 @@ const Home = () => {
             className="px-2"
             data={suggestedSongs}
             renderItem={({ item }) => (
-              <Pressable
-                className="mb-1 w-1/2 p-2 flex-1"
-                onPress={() => handlePlaySong(item)}
-              >
-                <View style={{ width: "100%", aspectRatio: 1 }}>
-                  {isValidImageUrl(item?.image[2]?.url) ? (
-                    <Image
-                      source={{ uri: item?.image[2]?.url }}
-                      style={{ width: "100%", height: "100%", borderRadius: 4 }}
-                    />
-                  ) : (
-                    <Image
-                      source={require("../../../assets/images/logo2.png")}
-                      style={{ width: "90%", height: "90%", borderRadius: 4 }}
-                      resizeMode="contain"
-                    />
-                  )}
-                </View>
-                <View className="items-start w-full h-full mt-2 flex-1">
-                  <View className="flex-row items-center gap-1 flex-1 overflow-hidden">
-                    {currentSong?.id === item?.id && isPlaying && (
-                      <Image
-                        source={require("../../../assets/images/gif3.gif")}
-                        style={{ width: 20, height: 20, borderRadius: 4 }}
-                      />
-                    )}
-                    <Text
-                      numberOfLines={1}
-                      className={`${currentSong?.id === item?.id ? "text-primary" : "text-white"} font-medium text-base`}
-                    >
-                      {item?.name}
-                    </Text>
-                  </View>
-                  <Text numberOfLines={1} className="text-white/70 text-sm">
-                    {item?.artists?.primary[0]?.name}
-                  </Text>
-                </View>
-              </Pressable>
+              <Albums
+                isSong
+                handlePlaySong={() => handlePlaySong(item)}
+                item={item}
+              />
             )}
             keyExtractor={(item) => item.id}
           />

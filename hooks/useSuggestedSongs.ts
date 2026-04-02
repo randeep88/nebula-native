@@ -2,7 +2,11 @@ import { api } from "@/utils/api";
 import { useQuery } from "@tanstack/react-query";
 
 const useSuggestedSongs = (songId: string) => {
-  const { data: suggestedSongs, isPending } = useQuery({
+  const {
+    data: suggestedSongs,
+    isPending,
+    refetch: refetchSuggestedSongs,
+  } = useQuery({
     queryKey: ["suggested-songs"],
     queryFn: async () => {
       const res = await api.get(`/songs/${songId}/suggestions?limit=100`);
@@ -10,7 +14,7 @@ const useSuggestedSongs = (songId: string) => {
     },
   });
 
-  return { suggestedSongs, isPending };
+  return { suggestedSongs, isPending, refetchSuggestedSongs };
 };
 
 export default useSuggestedSongs;

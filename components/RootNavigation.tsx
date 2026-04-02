@@ -23,6 +23,7 @@ const RootNavigation = () => {
       {true && (
         <Stack>
           <Stack.Screen name="auth/login" options={{ headerShown: false }} />
+          <Stack.Screen name="auth/signup" options={{ headerShown: false }} />
           <Stack.Protected guard={true}>
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
             <Stack.Screen

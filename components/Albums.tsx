@@ -3,16 +3,29 @@ import { useRouter } from "expo-router";
 import React from "react";
 import { Image, Pressable, Text, View } from "react-native";
 
-const Albums = ({ item }: { item: any }) => {
+const Albums = ({
+  item,
+  isSong = false,
+  handlePlaySong,
+}: {
+  item: any;
+  isSong?: boolean;
+  handlePlaySong?: () => void;
+}) => {
   const router = useRouter();
+
   return (
     <Pressable
-      onPress={() =>
-        router.push({
-          pathname: "/(tabs)/(search)/album/[albumId]",
-          params: { albumId: item.id },
-        })
-      }
+      onPress={() => {
+        if (isSong) {
+          handlePlaySong?.();
+        } else {
+          router.push({
+            pathname: "/(tabs)/(search)/album/[albumId]",
+            params: { albumId: item.id },
+          });
+        }
+      }}
       className="mb-1 w-1/2 p-2"
     >
       <View style={{ width: "100%", aspectRatio: 1 }}>

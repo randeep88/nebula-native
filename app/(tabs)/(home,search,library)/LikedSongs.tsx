@@ -71,7 +71,7 @@ const LikedSongs = () => {
           left: 0,
           right: 0,
           zIndex: 20,
-          backgroundColor: "#002c8b",
+          backgroundColor: "#8E44AD",
           padding: 10,
           paddingHorizontal: 15,
           opacity: headerOpacity,

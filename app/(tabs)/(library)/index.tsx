@@ -27,8 +27,6 @@ const LibraryScreen = () => {
   const [activeTab, setActiveTab] = useState("");
   const [refreshing, setRefreshing] = useState(false);
 
-  console.log(activeTab);
-
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
     await refetch();

@@ -264,7 +264,7 @@ const playlist = () => {
             </View>
           </View>
         </View>
-        <View className="px-3 flex-1 h-full" style={{ marginBottom: 30 }}>
+        <View className="px-3 flex-1 h-full" style={{ paddingBottom: 200 }}>
           {songDetails?.length > 0 ? (
             <FlatList
               scrollEnabled={false}

@@ -245,7 +245,7 @@ const AlbumDetails = () => {
             </View>
           </View>
         </View>
-        <View className="px-3 flex-1" style={{ marginBottom: 30 }}>
+        <View className="px-3 flex-1" style={{ paddingBottom: 200 }}>
           <FlatList
             scrollEnabled={false}
             showsVerticalScrollIndicator={false}

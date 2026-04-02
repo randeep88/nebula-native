@@ -6,11 +6,14 @@ import * as Sentry from "@sentry/react-native";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { usePathname } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+import { LogBox } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { MD3LightTheme, Provider as PaperProvider } from "react-native-paper";
 import "react-native-reanimated";
 import { ToastProvider } from "react-native-toast-notifications";
 import "./global.css";
+
+LogBox.ignoreLogs(["[Layout children]: Too many screens defined"]);
 
 Sentry.init({
   dsn: "https://2b4e7cf84e0ea82735d50d345efd37da@o4511142153027584.ingest.de.sentry.io/4511142157615184",

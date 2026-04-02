@@ -12,10 +12,11 @@ import BottomSheet, {
 } from "@gorhom/bottom-sheet";
 import Slider from "@react-native-community/slider";
 import { LinearGradient } from "expo-linear-gradient";
-import { Link, router } from "expo-router";
+import { router } from "expo-router";
 import { useCallback, useMemo, useRef } from "react";
 import { ActivityIndicator, Image, Pressable, Text, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { Divider } from "react-native-paper";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const PlayerModal = () => {
@@ -96,8 +97,8 @@ const PlayerModal = () => {
           width: "100%",
         }}
       >
-        <View className="flex-row items-center justify-between">
-          <Pressable onPress={() => router.back()} className="p-4">
+        <View className="flex-row items-center justify-between px-3">
+          <Pressable onPress={() => router.back()} className="p-2">
             <Text className="text-white text-2xl">
               <Entypo name="chevron-thin-down" color="#fff" size={24} />
             </Text>
@@ -106,196 +107,253 @@ const PlayerModal = () => {
             <Text className="text-white text-sm uppercase">
               Playing From Album
             </Text>
-            <Link
-              href={`/(search)/album/${currentSong?.album?.id}` as any}
-              asChild
+
+            <Text
+              numberOfLines={1}
+              className="text-white text-sm font-semibold"
             >
-              <Text
-                numberOfLines={1}
-                className="text-white text-sm font-semibold"
-              >
-                {currentSong?.album?.name}
-              </Text>
-            </Link>
-          </View>
-          <Pressable onPress={() => router.back()} className="p-4">
-            <Text className="text-white text-2xl">
-              <Entypo name="dots-three-vertical" color="#fff" size={20} />
+              {currentSong?.album?.name}
             </Text>
-          </Pressable>
+          </View>
+          <Pressable className="size-10"></Pressable>
         </View>
 
-        <View className="flex-1 items-center px-6 gap-8 mt-1">
+        <View className="flex-1 items-center justify-between gap-5 px-5 mt-2">
           <Image
             source={{ uri: currentSong?.image?.[2]?.url }}
-            style={{ width: 300, height: 300, borderRadius: 8 }}
+            style={{ width: "100%", aspectRatio: 1, borderRadius: 8 }}
           />
-          <View className="flex-row items-center justify-between mt-5 w-full px-3">
-            <View className="w-[80%]">
-              <Text
-                numberOfLines={1}
-                className="text-white font-semibold text-2xl"
-              >
-                {currentSong?.name}
-              </Text>
-              <Link
-                href={
-                  `/(search)/artist/${currentSong?.artists?.primary?.[0]?.id}` as any
-                }
-                asChild
-              >
+          <View className="w-full flex-1 items-center justify-between">
+            <View className="flex-row  items-center justify-between w-full px-2">
+              <View className="w-[80%]">
+                <Text
+                  numberOfLines={1}
+                  className="text-white font-semibold text-2xl"
+                >
+                  {currentSong?.name}
+                </Text>
+
                 <Text numberOfLines={1} className="text-gray-200 text-lg">
                   {currentSong?.artists?.primary?.[0]?.name}
                 </Text>
-              </Link>
-            </View>
-            {isAddingSong || isRemovingSong ? (
-              <View className="items-center flex-1 justify-center w-full">
-                <ActivityIndicator color="#fff" />
               </View>
-            ) : isSongInLibrary ? (
-              <Pressable onPress={() => removeSong(currentSong?.id)}>
-                <MaterialCommunityIcons
-                  name="check-circle"
-                  color="#00CDAC"
-                  size={34}
-                />
-              </Pressable>
-            ) : (
-              <Pressable onPress={() => addSong(currentSong?.id)}>
-                <MaterialCommunityIcons
-                  name="plus-circle-outline"
-                  color="#fff"
-                  size={34}
-                />
-              </Pressable>
-            )}
-          </View>
-          <View className="w-full z-0">
-            <Slider
-              style={{ width: "100%", height: 10 }}
-              minimumValue={0}
-              maximumValue={status?.duration}
-              value={status?.currentTime}
-              onSlidingComplete={(value) => seekTo(value)}
-              minimumTrackTintColor="#fff"
-              maximumTrackTintColor="#ffffff80"
-              thumbTintColor="#fff"
-            />
-            <View className="flex-row items-center justify-between mt-2 px-3">
-              <Text className="text-white text-sm">
-                {formatDuration(status?.currentTime)}
-              </Text>
-              <Text className="text-white text-sm">
-                {formatDuration(status?.duration)}
-              </Text>
+              {isAddingSong || isRemovingSong ? (
+                <View className="items-center flex-1 justify-center w-full">
+                  <ActivityIndicator color="#fff" />
+                </View>
+              ) : isSongInLibrary ? (
+                <Pressable onPress={() => removeSong(currentSong?.id)}>
+                  <MaterialCommunityIcons
+                    name="check-circle"
+                    color="#00CDAC"
+                    size={34}
+                  />
+                </Pressable>
+              ) : (
+                <Pressable onPress={() => addSong(currentSong?.id)}>
+                  <MaterialCommunityIcons
+                    name="plus-circle-outline"
+                    color="#fff"
+                    size={34}
+                  />
+                </Pressable>
+              )}
             </View>
-          </View>
-
-          <View className="flex-row items-center justify-between w-full px-3">
-            <Pressable onPress={toggleShuffle}>
-              <MaterialCommunityIcons
-                name={isShuffle ? "shuffle" : "shuffle-disabled"}
-                color={isShuffle ? "#00CDAC" : "white"}
-                size={24}
+            <View className="w-full z-0">
+              <Slider
+                style={{
+                  width: "100%",
+                  height: 12,
+                }}
+                minimumValue={0}
+                maximumValue={status?.duration}
+                value={status?.currentTime}
+                onSlidingComplete={(value) => seekTo(value)}
+                minimumTrackTintColor="#fff"
+                maximumTrackTintColor="#ffffff80"
+                thumbTintColor="#fff"
               />
-            </Pressable>
-            <Pressable onPress={prevSong} disabled={currentIndex === 0}>
-              <MaterialCommunityIcons
-                name="skip-previous"
-                color={currentIndex === 0 ? "gray" : "white"}
-                size={45}
-              />
-            </Pressable>
+              <View className="flex-row items-center justify-between mt-2 px-3">
+                <Text className="text-white text-sm">
+                  {formatDuration(status?.currentTime)}
+                </Text>
+                <Text className="text-white text-sm">
+                  {formatDuration(status?.duration)}
+                </Text>
+              </View>
+            </View>
 
-            {isPlaying ? (
-              <Pressable onPress={handleStop}>
+            <View className="flex-row items-center justify-between w-full ">
+              <Pressable
+                disabled={currentIndex + 1 === songsQueue?.length}
+                onPress={toggleShuffle}
+                className="p-2"
+              >
                 <MaterialCommunityIcons
-                  name="pause-circle"
-                  color="white"
-                  size={70}
+                  name={isShuffle ? "shuffle" : "shuffle-disabled"}
+                  color={
+                    isShuffle
+                      ? "#00CDAC"
+                      : currentIndex + 1 === songsQueue?.length
+                        ? "gray"
+                        : "white"
+                  }
+                  size={24}
                 />
               </Pressable>
-            ) : (
-              <Pressable onPress={handlePlay}>
+              <Pressable
+                className="p-2"
+                onPress={prevSong}
+                disabled={currentIndex === 0}
+              >
                 <MaterialCommunityIcons
-                  name="play-circle"
-                  color="white"
-                  size={70}
+                  name="skip-previous"
+                  color={currentIndex === 0 ? "gray" : "white"}
+                  size={45}
                 />
               </Pressable>
-            )}
 
-            <Pressable
-              onPress={nextSong}
-              disabled={currentIndex + 1 === songsQueue?.length}
-            >
-              <MaterialCommunityIcons
-                name="skip-next"
-                color={
-                  currentIndex + 1 === songsQueue?.length ? "gray" : "white"
-                }
-                size={45}
-              />
-            </Pressable>
-            <Pressable>
-              <Text>
-                {isRepeat === "false" && (
+              {isPlaying ? (
+                <Pressable onPress={handleStop}>
                   <MaterialCommunityIcons
-                    name="repeat-off"
+                    name="pause-circle"
                     color="white"
-                    size={24}
-                    onPress={() => setRepeat("true")}
+                    size={70}
                   />
-                )}
-                {isRepeat === "true" && (
+                </Pressable>
+              ) : (
+                <Pressable onPress={handlePlay}>
                   <MaterialCommunityIcons
-                    name="repeat"
-                    color="#00CDAC"
-                    size={24}
-                    onPress={() => setRepeat("one")}
+                    name="play-circle"
+                    color="white"
+                    size={70}
                   />
+                </Pressable>
+              )}
+
+              <Pressable
+                className="p-2"
+                onPress={nextSong}
+                disabled={currentIndex + 1 === songsQueue?.length}
+              >
+                <MaterialCommunityIcons
+                  name="skip-next"
+                  color={
+                    currentIndex + 1 === songsQueue?.length ? "gray" : "white"
+                  }
+                  size={45}
+                />
+              </Pressable>
+              <Pressable className="p-2">
+                <Text>
+                  {isRepeat === "false" && (
+                    <MaterialCommunityIcons
+                      name="repeat-off"
+                      color="white"
+                      size={24}
+                      onPress={() => setRepeat("true")}
+                    />
+                  )}
+                  {isRepeat === "true" && (
+                    <MaterialCommunityIcons
+                      name="repeat"
+                      color="#00CDAC"
+                      size={24}
+                      onPress={() => setRepeat("one")}
+                    />
+                  )}
+                  {isRepeat === "one" && (
+                    <MaterialCommunityIcons
+                      name="repeat-once"
+                      color="#00CDAC"
+                      size={24}
+                      onPress={() => setRepeat("false")}
+                    />
+                  )}
+                </Text>
+              </Pressable>
+            </View>
+
+            <View className="w-full flex-row items-center justify-between">
+              <Pressable
+                className="p-2"
+                onPress={() => {
+                  setIsQueueOpen(true);
+                }}
+              >
+                <MaterialCommunityIcons
+                  name="download"
+                  color="white"
+                  size={24}
+                />
+              </Pressable>
+
+              <Pressable
+                className="p-2"
+                onPress={() => {
+                  if (sheetRef) {
+                    sheetRef?.current?.snapToIndex(0);
+                  }
+                }}
+              >
+                <MaterialCommunityIcons
+                  name="playlist-music"
+                  color="white"
+                  size={24}
+                />
+              </Pressable>
+            </View>
+
+            <Divider className="w-full opacity-30" />
+
+            {currentIndex + 1 < songsQueue?.length ? (
+              <View className="w-full px-2 items-start justify-start gap-1">
+                <Text className="text-white text-sm uppercase tracking-wider w-full">
+                  up next
+                </Text>
+                {songsQueue?.length > 0 && (
+                  <Pressable
+                    onPress={() => {
+                      updateLastPlayedSong(songsQueue[currentIndex + 1]?.id);
+                      setCurrentSong(songsQueue[currentIndex + 1]);
+                      setIsPlaying(true);
+                    }}
+                    className="p-2 flex-row items-center gap-4 mb-2 w-full"
+                  >
+                    <Image
+                      source={{
+                        uri: songsQueue[currentIndex + 1]?.image[2]?.url,
+                      }}
+                      style={{ width: 46, height: 46, borderRadius: 4 }}
+                    />
+                    <View className="w-[65%]">
+                      <Text
+                        numberOfLines={1}
+                        className="text-white font-medium mb-1 text-[15px]"
+                      >
+                        {songsQueue[currentIndex + 1]?.name}
+                      </Text>
+                      <Text numberOfLines={1} className="text-white/70 text-sm">
+                        {songsQueue[currentIndex + 1]?.artists?.primary?.[0]
+                          ?.name || ""}
+                      </Text>
+                    </View>
+                    <Text className="text-white/70 text-sm px-2">
+                      {formatDuration(songsQueue[currentIndex + 1]?.duration)}
+                    </Text>
+                  </Pressable>
                 )}
-                {isRepeat === "one" && (
-                  <MaterialCommunityIcons
-                    name="repeat-once"
-                    color="#00CDAC"
-                    size={24}
-                    onPress={() => setRepeat("false")}
-                  />
-                )}
-              </Text>
-            </Pressable>
-          </View>
-
-          <View>
-            <Text></Text>
-          </View>
-
-          <View className="w-full px-3 flex-row items-center justify-between">
-            <Pressable
-              className="p-2"
-              onPress={() => {
-                setIsQueueOpen(true);
-              }}
-            >
-              <MaterialCommunityIcons name="download" color="white" size={24} />
-            </Pressable>
-
-            <Pressable
-              className="p-2"
-              onPress={() => {
-                if (sheetRef) {
-                  sheetRef?.current?.snapToIndex(0);
-                }
-              }}
-            >
-              <MaterialCommunityIcons
-                name="playlist-music"
-                color="white"
-                size={24}
-              />
-            </Pressable>
+              </View>
+            ) : (
+              <View className="w-full px-2 items-start justify-start gap-1">
+                <Text className="text-white text-sm uppercase tracking-wider w-full">
+                  up next
+                </Text>
+                <Text className="text-white/70 text-sm text-center py-4 w-full">
+                  Next upcoming song will be shown here
+                </Text>
+              </View>
+            )}
           </View>
         </View>
       </LinearGradient>
@@ -413,6 +471,9 @@ const PlayerModal = () => {
                   {item?.artists?.primary[0]?.name}
                 </Text>
               </View>
+              <Text numberOfLines={1} className="text-white/70 text-sm px-2">
+                {formatDuration(item?.duration)}
+              </Text>
             </Pressable>
           )}
         />

@@ -43,7 +43,6 @@ const PlaylistDetails = () => {
     isRemovingSong,
   } = useLibrary();
   const { playlistId } = useLocalSearchParams();
-  console.log(playlistId);
 
   const router = useRouter();
 

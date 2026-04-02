@@ -1,5 +1,5 @@
+import { usePlayerStore } from "@/store/usePlayerStore";
 import Feather from "@expo/vector-icons/Feather";
-import { usePathname } from "expo-router";
 import React from "react";
 import { TextInput, View } from "react-native";
 
@@ -12,6 +12,7 @@ const SearchBar = ({
   value?: string;
   onChangeText?: (text: string) => void;
 }) => {
+  const { searchQuery, setSearchQuery } = usePlayerStore();
   return (
     <View className="relative">
       <Feather
@@ -25,8 +26,18 @@ const SearchBar = ({
         value={value}
         onChangeText={onChangeText}
         placeholder="What do you want to listen to?"
-        className="font-semibold text-lg p-3 px-3 bg-white text-black rounded-md ps-12"
+        placeholderTextColor="gray"
+        className="font-semibold text-lg p-3 bg-white text-black rounded-md ps-12 pe-12"
       />
+      {searchQuery && (
+        <Feather
+          name="x"
+          size={24}
+          color="black"
+          onPress={() => setSearchQuery("")}
+          className="absolute z-10 top-3 right-0 transform -translate-x-1/2"
+        />
+      )}
     </View>
   );
 };

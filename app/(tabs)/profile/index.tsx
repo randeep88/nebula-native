@@ -249,6 +249,8 @@ const Profile = () => {
                 </View>
               ) : (
                 <FlatList
+                  scrollEnabled={false}
+                  showsVerticalScrollIndicator={false}
                   key={"myplaylist"}
                   keyExtractor={(item) => item?.id}
                   data={myPlaylists}
@@ -341,116 +343,116 @@ const Profile = () => {
             </Dialog.Actions>
           </Dialog>
         </Portal>
+      </ScrollView>
 
-        <Modal transparent visible={visible} animationType="slide">
-          <View className="flex-1 bg-black/60 items-center justify-center">
-            <View className="bg-zinc-800 p-6 rounded-xl w-[90%] gap-5">
-              <Text className="text-gray-200 text-lg font-semibold">
-                Edit Profile
-              </Text>
+      <Modal transparent visible={visible} animationType="slide">
+        <View className="flex-1 bg-black/60 items-center justify-center">
+          <View className="bg-zinc-800 p-6 rounded-xl w-[90%] gap-5">
+            <Text className="text-gray-200 text-lg font-semibold">
+              Edit Profile
+            </Text>
 
-              <View>
-                <View className="items-center">
-                  <View className="relative">
-                    {image && !uploadingImage ? (
-                      <Image
-                        source={image}
-                        style={{
-                          width: 150,
-                          height: 150,
-                          borderRadius: 1000,
-                          borderWidth: 1,
-                          borderColor: "black",
-                        }}
+            <View>
+              <View className="items-center">
+                <View className="relative">
+                  {image && !uploadingImage ? (
+                    <Image
+                      source={image}
+                      style={{
+                        width: 150,
+                        height: 150,
+                        borderRadius: 1000,
+                        borderWidth: 1,
+                        borderColor: "black",
+                      }}
+                    />
+                  ) : uploadingImage ? (
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        gap: 5,
+                        alignItems: "center",
+                        justifyContent: "center",
+                        width: 150,
+                        height: 150,
+                        borderRadius: 1000,
+                        borderWidth: 1,
+                        borderColor: "gray",
+                      }}
+                    >
+                      <ActivityIndicator color="#d1d5db" size={15} />
+                      <Text className="text-gray-300 text-xs">
+                        Uploading Image
+                      </Text>
+                    </View>
+                  ) : (
+                    <Image
+                      source={
+                        user?.profilePic
+                          ? { uri: user?.profilePic }
+                          : require("../../../assets/images/dummy.jpg")
+                      }
+                      style={{
+                        width: 150,
+                        height: 150,
+                        borderRadius: 1000,
+                        borderWidth: 1,
+                        borderColor: "gray",
+                      }}
+                    />
+                  )}
+                  {!uploadingImage && (
+                    <Pressable
+                      onPress={pickImage}
+                      className="self-start absolute bottom-3 right-3 border-black border-2 bg-gray-200 z-10 rounded-full w-8 h-8 items-center justify-center"
+                    >
+                      <MaterialCommunityIcons
+                        name="pencil"
+                        size={17}
+                        color="black"
                       />
-                    ) : uploadingImage ? (
-                      <View
-                        style={{
-                          flexDirection: "row",
-                          gap: 5,
-                          alignItems: "center",
-                          justifyContent: "center",
-                          width: 150,
-                          height: 150,
-                          borderRadius: 1000,
-                          borderWidth: 1,
-                          borderColor: "gray",
-                        }}
-                      >
-                        <ActivityIndicator color="#d1d5db" size={15} />
-                        <Text className="text-gray-300 text-xs">
-                          Uploading Image
-                        </Text>
-                      </View>
-                    ) : (
-                      <Image
-                        source={
-                          user?.profilePic
-                            ? { uri: user?.profilePic }
-                            : require("../../../assets/images/dummy.jpg")
-                        }
-                        style={{
-                          width: 150,
-                          height: 150,
-                          borderRadius: 1000,
-                          borderWidth: 1,
-                          borderColor: "gray",
-                        }}
-                      />
-                    )}
-                    {!uploadingImage && (
-                      <Pressable
-                        onPress={pickImage}
-                        className="self-start absolute bottom-3 right-3 border-black border-2 bg-gray-200 z-10 rounded-full w-8 h-8 items-center justify-center"
-                      >
-                        <MaterialCommunityIcons
-                          name="pencil"
-                          size={17}
-                          color="black"
-                        />
-                      </Pressable>
-                    )}
-                  </View>
+                    </Pressable>
+                  )}
                 </View>
-                <View className="gap-5 my-5">
-                  <TextInput
-                    label="Username"
-                    mode="outlined"
-                    style={{ backgroundColor: "#27272a" }}
-                    textColor="white"
-                    value={username}
-                    placeholderTextColor="#d4d4d4"
-                    theme={{ colors: { onSurfaceVariant: "#d4d4d4" } }}
-                    onChangeText={setUsername}
-                  />
-                </View>
+              </View>
+              <View className="gap-5 my-5">
+                <TextInput
+                  label="Username"
+                  mode="outlined"
+                  style={{ backgroundColor: "#27272a" }}
+                  textColor="white"
+                  value={username}
+                  placeholderTextColor="#d4d4d4"
+                  theme={{ colors: { onSurfaceVariant: "#d4d4d4" } }}
+                  onChangeText={setUsername}
+                />
+              </View>
 
-                <View className="flex-row justify-end gap-3 mt-3">
-                  <Pressable onPress={() => setVisible(false)} className="p-3">
-                    <Text className="text-gray-400">Cancel</Text>
-                  </Pressable>
+              <View className="flex-row justify-end gap-3 mt-3">
+                <Pressable onPress={() => setVisible(false)} className="p-3">
+                  <Text className="text-gray-400">Cancel</Text>
+                </Pressable>
 
-                  <Button
-                    mode="contained"
-                    disabled={uploadingImage}
-                    onPress={() => {
-                      updateUser();
-                      setVisible(false);
-                    }}
-                  >
-                    <Text className="text-black">Save</Text>
-                  </Button>
-                </View>
+                <Button
+                  mode="contained"
+                  disabled={uploadingImage}
+                  onPress={() => {
+                    updateUser();
+                    setVisible(false);
+                  }}
+                >
+                  <Text className="text-black">Save</Text>
+                </Button>
               </View>
             </View>
           </View>
-        </Modal>
+        </View>
+      </Modal>
 
-        <CreatePlaylistModal
-          isVisible={playlistModalVisible}
-          onClose={() => setPlaylistModalVisible(false)}
-        />
-      </ScrollView>
+      <CreatePlaylistModal
+        isVisible={playlistModalVisible}
+        onClose={() => setPlaylistModalVisible(false)}
+      />
     </SafeAreaView>
   );
 };

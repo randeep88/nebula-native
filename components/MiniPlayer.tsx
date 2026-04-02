@@ -10,6 +10,7 @@ import { setAudioModeAsync } from "expo-audio";
 import { Link } from "expo-router";
 import { useEffect, useState } from "react";
 import { ActivityIndicator, Image, Pressable, Text, View } from "react-native";
+import { PanGestureHandler } from "react-native-gesture-handler";
 import { ProgressBar } from "react-native-paper";
 
 const MiniPlayer = () => {
@@ -19,6 +20,7 @@ const MiniPlayer = () => {
     isPlaying,
     setIsPlaying,
     nextSong,
+    prevSong,
     setPlayer,
   } = usePlayerStore();
 
@@ -99,34 +101,48 @@ const MiniPlayer = () => {
 
   const song = currentSong ? currentSong : songDetails?.[0];
 
+  const onGestureEvent = (event: any) => {
+    const { translationX, state } = event.nativeEvent;
+
+    if (state === 5) {
+      if (translationX < -50) {
+        nextSong();
+      } else if (translationX > 50) {
+        prevSong();
+      }
+    }
+  };
+
   return (
     <Link href="/player-modal" className="absolute bottom-[65px] mx-2">
       <View
         className={`flex-row items-center justify-between relative p-2 rounded-lg w-full`}
         style={{ backgroundColor: dominant }}
       >
-        <View className="flex-row items-center gap-3 flex-1">
-          <Image
-            source={{ uri: song?.image?.[2]?.url }}
-            style={{ width: 40, height: 40, borderRadius: 4 }}
-          />
-          <View className="flex-1">
-            <Text numberOfLines={1} className="text-white font-semibold">
-              {song?.name}
-            </Text>
-            <View className="flex-row items-center gap-1">
-              {song?.explicit && (
-                <MaterialIcons name="explicit" color="gray" size={16} />
-              )}
-              <Text
-                numberOfLines={1}
-                className="text-white/80 text-sm font-medium"
-              >
-                {song?.artists?.primary[0]?.name}
+        <PanGestureHandler onHandlerStateChange={onGestureEvent}>
+          <View className="flex-row items-center gap-3 flex-1">
+            <Image
+              source={{ uri: song?.image?.[2]?.url }}
+              style={{ width: 40, height: 40, borderRadius: 4 }}
+            />
+            <View className="flex-1">
+              <Text numberOfLines={1} className="text-white font-semibold">
+                {song?.name}
               </Text>
+              <View className="flex-row items-center gap-1">
+                {song?.explicit && (
+                  <MaterialIcons name="explicit" color="gray" size={16} />
+                )}
+                <Text
+                  numberOfLines={1}
+                  className="text-white/80 text-sm font-medium"
+                >
+                  {song?.artists?.primary[0]?.name}
+                </Text>
+              </View>
             </View>
           </View>
-        </View>
+        </PanGestureHandler>
 
         <View className="flex-row items-center gap-2 h-full mx">
           {isAddingSong || isRemovingSong ? (
